@@ -1,16 +1,40 @@
 import React from 'react'
+import { useState } from 'react'
 import styled from "styled-components"
 import { Link } from 'react-router-dom'
 import Logo from "../assets/logo.svg"
 
 function Register() {
+  const [error, setError] = useState("");
+
+  const [values,setvalues] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
     const handleSubmit = (e) => {
         e.preventDefault();
-        alert("form");
+        handleValidation();
+        
     };
     const handleChange=(e)=>{
-
+    
+    setvalues({...values, [e.target.name]:e.target.value})
     }
+
+    const handleValidation=()=>{
+      console.log(values.password)
+      console.log(values.confirmPassword)
+      if (values.password !== values.confirmPassword) {
+        setError("Passwords do not match!");
+        return; // Prevent form submission
+      }
+  
+      setError(""); // Clear error if passwords match
+      alert("Form submitted successfully");
+    };
+    
   return (
     <>
     <FormContainer>
@@ -37,10 +61,10 @@ function Register() {
     />
     <input type="password" 
     placeholder='Confirm Password'
-    name='confirmpassword'
+    name='confirmPassword'
     onChange={(e)=>handleChange(e)}
     />
-    
+    {error && <p style={{ color: 'red' }}>{error}</p>}
    <button type='submit'> Create User</button>
     <span>
         Already have an account? <Link to="/login">Login</Link>
