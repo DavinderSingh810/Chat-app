@@ -34,7 +34,7 @@ function Register() {
         setError("Passwords do not match!");
         return; // Prevent form submission
       }
-      if(values.email==""){
+      if(values.email===""){
         setError("Email Required");
         return;
       }
