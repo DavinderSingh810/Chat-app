@@ -26,9 +26,17 @@ function Register() {
     const handleValidation=()=>{
       console.log(values.password)
       console.log(values.confirmPassword)
+      if(values.username.length<3){
+        setError("username length can not be less than 3");
+        return;
+      }
       if (values.password !== values.confirmPassword) {
         setError("Passwords do not match!");
         return; // Prevent form submission
+      }
+      if(values.email===""){
+        setError("Email Required");
+        return;
       }
   
       setError(""); // Clear error if passwords match
