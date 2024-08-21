@@ -3,6 +3,8 @@ import { useState } from 'react'
 import styled from "styled-components"
 import { Link } from 'react-router-dom'
 import Logo from "../assets/logo.svg"
+import axios from "axios"
+import { registerRoute } from '../utils/APIRoutes'
 
 function Register() {
   const [error, setError] = useState("");
@@ -13,34 +15,59 @@ function Register() {
     password: "",
     confirmPassword: "",
   })
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        handleValidation();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (handleValidation()) {
+        const { password, confirmPassword, username, email } = values;
+
+        try {
+            const { data } = await axios.post(registerRoute, {
+                username,
+                email,
+                password,
+            });
+
+            
+            console.log('Registration successful:', data);
+
+        } catch (error) {
+           
+            console.error('Error during registration:', error);
+            
+        }
+    } else {
+       
+        console.log('Validation failed');
         
-    };
+    }
+};
+
+        
+  
     const handleChange=(e)=>{
     
     setvalues({...values, [e.target.name]:e.target.value})
     }
 
     const handleValidation=()=>{
-      console.log(values.password)
-      console.log(values.confirmPassword)
+      
       if(values.username.length<3){
         setError("username length can not be less than 3");
-        return;
+        return false;
       }
       if (values.password !== values.confirmPassword) {
         setError("Passwords do not match!");
-        return; // Prevent form submission
+        return false; // Prevent form submission
       }
       if(values.email===""){
         setError("Email Required");
-        return;
+        return false;
       }
   
       setError(""); // Clear error if passwords match
       alert("Form submitted successfully");
+      return true;
     };
     
   return (
