@@ -52,18 +52,16 @@ function Login(){
 
     const handleValidation=()=>{
       
-      if(values.username.length<3){
-        setError("username length can not be less than 3");
+      if(values.username.length===0){
+        setError("This field cannot be empty");
         return false;
       }
-      if (values.password !== values.confirmPassword) {
-        setError("Passwords do not match!");
-        return false; // Prevent form submission
-      }
-      if(values.email===""){
-        setError("Email Required");
+      if(values.password.length===0){
+        setError("This field  cannot be empty");
         return false;
       }
+     
+      
   
       setError(""); // Clear error if passwords match
       alert("Form submitted successfully");

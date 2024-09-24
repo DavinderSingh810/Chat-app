@@ -20,6 +20,7 @@ function Register() {
 
     if (handleValidation()) {
         const { password, confirmPassword, username, email } = values;
+        
 
         try {
             const { data } = await axios.post(registerRoute, {
