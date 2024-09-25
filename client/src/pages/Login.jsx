@@ -1,112 +1,99 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { registerRoute } from "../utils/APIRoutes";
+import { loginRoute } from "../utils/APIRoutes";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import Logo from "../assets/logo.svg"
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import Logo from "../assets/logo.svg";
 
-function Login(){
+function Login() {
     const [error, setError] = useState("");
+    const [values, setValues] = useState({
+        username: "",
+        password: "",
+    });
+    const navigate = useNavigate(); // Use useNavigate instead of useHistory
 
-  const [values,setvalues] = useState({
-    username: "",
-   
-    password: "",
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  })
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+        if (handleValidation()) {
+            const { password, username } = values;
 
-    if (handleValidation()) {
-        const { password,  username } = values;
+            try {
+                const { data } = await axios.post(loginRoute, {
+                    username,
+                    password,
+                });
 
-        try {
-            const { data } = await axios.post(registerRoute, {
-                username,
-               
-                password,
-            });
+                console.log('Login successful:', data);
+                
+                // Redirect to the chat page upon successful login
+                // if (data.token) {
+                    // localStorage.setItem("token", data.token); // Store token if you are using one
+                    navigate("/chat"); // Use navigate to redirect
+                // } else {
+                //     setError("Login failed. Please try again.");
+                // }
 
-            
-            console.log('Registration successful:', data);
-
-        } catch (error) {
-           
-            console.error('Error during registration:', error);
-            
+            } catch (error) {
+                console.error('Error during login:', error);
+                setError("Login failed. Please check your credentials.");
+            }
+        } else {
+            console.log('Validation failed');
         }
-    } else {
-       
-        console.log('Validation failed');
-        
-    }
-};
-
-        
-  
-    const handleChange=(e)=>{
-    
-    setvalues({...values, [e.target.name]:e.target.value})
-    }
-
-    const handleValidation=()=>{
-      
-      if(values.username.length===0){
-        setError("This field cannot be empty");
-        return false;
-      }
-      if(values.password.length===0){
-        setError("This field  cannot be empty");
-        return false;
-      }
-     
-      
-  
-      setError(""); // Clear error if passwords match
-      alert("Form submitted successfully");
-      return true;
     };
-    
-  return (
-    <>
-    <FormContainer>
-   <form onSubmit={(e)=>handleSubmit(e)}>
-    <div className='brand'>
-      <img src={Logo} alt="Logo" />
-    <h1>Chatup</h1>
-    
-    </div>
-    <input type="text" 
-    placeholder='Username'
-    name='username'
-    onChange={(e)=>handleChange(e)}
-    />
-    
-    <input type="password" 
-    placeholder='Password'
-    name='password'
-    onChange={(e)=>handleChange(e)}
-    />
-   
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-   <button type='submit'> Login</button>
-    <span>
-        Do not have an account? <Link to="/register">Register</Link>
-    </span>
 
-   </form>
-    
-    </FormContainer>
-    </>
-  )
+    const handleChange = (e) => {
+        setValues({ ...values, [e.target.name]: e.target.value });
+    };
+
+    const handleValidation = () => {
+        if (values.username.length === 0) {
+            setError("This field cannot be empty");
+            return false;
+        }
+        if (values.password.length === 0) {
+            setError("This field cannot be empty");
+            return false;
+        }
+
+        setError(""); // Clear error if validations pass
+        return true;
+    };
+
+    return (
+        <FormContainer>
+            <form onSubmit={handleSubmit}>
+                <div className='brand'>
+                    <img src={Logo} alt="Logo" />
+                    <h1>Chatup</h1>
+                </div>
+                <input
+                    type="text"
+                    placeholder='Username'
+                    name='username'
+                    onChange={handleChange}
+                />
+                <input
+                    type="password"
+                    placeholder='Password'
+                    name='password'
+                    onChange={handleChange}
+                />
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <button type='submit'>Login</button>
+                <span>
+                    Do not have an account? <Link to="/register">Register</Link>
+                </span>
+            </form>
+        </FormContainer>
+    );
 }
 
-
 const FormContainer = styled.div`
-  
   width: 100vw;
-  height:100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -126,8 +113,6 @@ const FormContainer = styled.div`
       text-transform: uppercase;
     }
   }
-    
-
   form {
     display: flex;
     flex-direction: column;
@@ -135,8 +120,6 @@ const FormContainer = styled.div`
     background-color: #00000076;
     border-radius: 2rem;
     padding: 3rem 5rem;
-     
-
   }
   input {
     background-color: transparent;
@@ -174,12 +157,6 @@ const FormContainer = styled.div`
       font-weight: bold;
     }
   }
-    
 `;
 
-
-
-
-
-
-export default Login
+export default Login;
