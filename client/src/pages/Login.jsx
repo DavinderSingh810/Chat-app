@@ -27,7 +27,7 @@ function Login() {
 
                 console.log('Login successful:', data);
                 
-                // Redirect to the chat page upon successful login
+                // / Redirect to the chat page upon successful login
                 // if (data.token) {
                     // localStorage.setItem("token", data.token); // Store token if you are using one
                     navigate("/chat"); // Use navigate to redirect
